@@ -1,6 +1,6 @@
 Beatsaver-Browser
 
-*Currently inconvenient to use, DO NOT USE*
+*Currently only pulls 10 maps, will add in adjustable range soon*
 
 This is a standalone application for managing custom songs.
 It keeps track of downloaded and installed songs, so you know what maps you've got and what maps you can get.
@@ -12,11 +12,14 @@ Current features:
 - Uninstall songs
 - Delete downloaded files
 - Keep track of downloaded/installed files
+- Remember song info and load at startup (loading is hyper fast!)
+- Apply status to maps (downloaded/installed)
+
 
 TODO (important):
-- Cache song info (instead of reloading every time on start, store the data and read it on startup)
-- Apply downloaded/installed status to loaded maps (should have maps check if they're already downloaded/installed and apply that status on load/startup)
+- Adjustable range of maps to check for (0-newest, currently set to 14-24)
 - Display status of whatever is going on (downloading/installing)
+- Additional safety checks to prevent or handle conflicts (ie. installing when already installed)
 
 TODO (lower priority):
 - Implement an actual GUI
