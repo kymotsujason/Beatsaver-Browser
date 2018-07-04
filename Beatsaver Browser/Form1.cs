@@ -16,52 +16,160 @@ namespace Beatsaver_Browser
 {
     public partial class Form1 : Form
     {
-        String dataPath = @".\Beatsaver_Browser_Data";
+        String dataPath = @".\Beatsaver_Browser_Data\";
+        String zipsPath = @".\Beatsaver_Browser_Data\zips\";
+        String imgPath = @".\Beatsaver_Browser_Data\img\";
+        String extractPath = @"C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\CustomSongs\";
+        List<Beatmap> jsonInfo = new List<Beatmap>();
+        List<String> listID = new List<string>();
 
         public Form1()
         {
             InitializeComponent();
-            checkFolder();
+            CheckFolder();
+            PopulateList();
+            UpdateList();
         }
 
-        private void checkFolder()
+        private void CheckFolder()
         {
-            try
+            // Determine whether the directory exists.
+            if (!Directory.Exists(dataPath))
             {
-                // Determine whether the directory exists.
-                if (Directory.Exists(dataPath))
+                Directory.CreateDirectory(dataPath);
+            }
+            if (!Directory.Exists(zipsPath))
+            {
+                Directory.CreateDirectory(zipsPath);
+            }
+            if (!Directory.Exists(imgPath))
+            {
+                Directory.CreateDirectory(imgPath);
+            }
+        }
+
+        private void PopulateList()
+        {
+            string beatmapJSON = dataPath + "beatmaps.json";
+            if (File.Exists(beatmapJSON))
+            {
+                var json = File.ReadAllText(beatmapJSON);
+                var objList = JsonConvert.DeserializeObject<List<Beatmap>>(json);
+                foreach (var obj in objList)
                 {
-                    //Console.WriteLine("That path exists already.");
-                    return;
+                    Image image = Image.FromFile(imgPath + obj.id + "." + obj.img);
+                    dataGridView1.Rows.Add(Action.FalseValue, image, obj.id, obj.beatname,
+                        obj.songName, obj.beatsPerMinute, obj.difficultyLevels, obj.downloads, obj.plays,
+                        obj.upvotes, obj.uploader, obj.beattext, "https://beatsaver.com/details.php?id=" + obj.id);
+                    listID.Add(obj.id);
+                    dataGridView1.Update();
                 }
-
-                // Try to create the directory.
-                DirectoryInfo di = Directory.CreateDirectory(dataPath);
-                //Console.WriteLine("The directory was created successfully at {0}.", Directory.GetCreationTime(path));
-
-                // Delete the directory.
-                //di.Delete();
-                //Console.WriteLine("The directory was deleted successfully.");
             }
-            catch (Exception e)
+        }
+
+        private void UpdateList()
+        {
+            string installTxt = dataPath + "install.txt";
+            string downloadTxt = dataPath + "download.txt";
+            List<String> installList = new List<string>();
+            if (File.Exists(installTxt) && File.Exists(downloadTxt))
             {
-                Console.WriteLine("The process failed: {0}", e.ToString());
+                List<String> downloadID = File.ReadAllLines(downloadTxt).ToList();
+                List<String> installID = File.ReadAllLines(installTxt).ToList();
+                foreach (var item in installID)
+                {
+                    List<String> words = new List<String>(item.ToString().Split('|'));
+                    installList.Add(words[0]);
+                }
+                foreach (DataGridViewRow row in dataGridView1.Rows)
+                {
+                    String currentID = dataGridView1.Rows[row.Index].Cells[2].Value.ToString();
+                    if (installList.Any(s => currentID.Equals(s)))
+                    {
+                        row.DefaultCellStyle.BackColor = Color.Green;
+                    }
+                    else if (downloadID.Any(s => currentID.Equals(s)))
+                    {
+                        row.DefaultCellStyle.BackColor = Color.Blue;
+                    }
+                    else
+                    {
+                        row.DefaultCellStyle.BackColor = Color.White;
+                    }
+                }
             }
-            finally { }
+            else if (File.Exists(installTxt))
+            {
+                List<String> installID = File.ReadAllLines(installTxt).ToList();
+                foreach (var item in installID)
+                {
+                    List<String> words = new List<String>(item.ToString().Split('|'));
+                    installList.Add(words[0]);
+                }
+                foreach (DataGridViewRow row in dataGridView1.Rows)
+                {
+                    String currentID = dataGridView1.Rows[row.Index].Cells[2].Value.ToString();
+                    if (installList.Any(s => currentID.Equals(s)))
+                    {
+                        row.DefaultCellStyle.BackColor = Color.Green;
+                    }
+                    else
+                    {
+                        row.DefaultCellStyle.BackColor = Color.White;
+                    }
+                }
+            }
+            else if (File.Exists(downloadTxt))
+            {
+                List<String> downloadID = File.ReadAllLines(downloadTxt).ToList();
+                foreach (DataGridViewRow row in dataGridView1.Rows)
+                {
+                    String currentID = dataGridView1.Rows[row.Index].Cells[2].Value.ToString();
+                    if (downloadID.Any(s => currentID.Equals(s)))
+                    {
+                        row.DefaultCellStyle.BackColor = Color.Blue;
+                    }
+                    else
+                    {
+                        row.DefaultCellStyle.BackColor = Color.White;
+                    }
+                }
+            }
+            else
+            {
+                foreach (DataGridViewRow row in dataGridView1.Rows)
+                {
+                    row.DefaultCellStyle.BackColor = Color.White;
+                }
+            }
         }
 
         private async Task DownloadInfo(Uri url, String currentID)
         {
             using (WebClient wc = new WebClient())
             {
-                Image image = null;
                 var json = await wc.DownloadStringTaskAsync(url);
-                var obj = JsonConvert.DeserializeObject<List<RootObject>>(json);
+                var obj = JsonConvert.DeserializeObject<List<Beatmap>>(json);
                 if (obj.Count() > 0)
                 {
-                    dataGridView1.Rows.Add(Action.FalseValue, image, obj[0].id, obj[0].beatname,
-                        obj[0].songName, obj[0].beatsPerMinute, obj[0].difficultyLevels, obj[0].downloads, obj[0].plays,
-                        obj[0].upvotes, obj[0].uploader, obj[0].beattext, "https://beatsaver.com/details.php?id=" + obj[0].id);
+                    if (File.Exists(imgPath + currentID + "." + obj[0].img))
+                    {
+                        Image image = Image.FromFile(imgPath + currentID + "." + obj[0].img);
+                        dataGridView1.Rows.Add(Action.FalseValue, image, obj[0].id, obj[0].beatname,
+                            obj[0].songName, obj[0].beatsPerMinute, obj[0].difficultyLevels, obj[0].downloads, obj[0].plays,
+                            obj[0].upvotes, obj[0].uploader, obj[0].beattext, "https://beatsaver.com/details.php?id=" + obj[0].id);
+                    }
+                    else
+                    {
+                        await DownloadImage(currentID, obj[0].img);
+                        Image image = Image.FromFile(imgPath + currentID + "." + obj[0].img);
+                        dataGridView1.Rows.Add(Action.FalseValue, image, obj[0].id, obj[0].beatname,
+                            obj[0].songName, obj[0].beatsPerMinute, obj[0].difficultyLevels, obj[0].downloads, obj[0].plays,
+                            obj[0].upvotes, obj[0].uploader, obj[0].beattext, "https://beatsaver.com/details.php?id=" + obj[0].id);
+                    }
+                    //sw.Write(JsonConvert.SerializeObject(obj.ToArray(), Formatting.Indented));
+                    jsonInfo.Add(obj[0]);
+                    listID.Add(obj[0].id);
                 }
             }
             dataGridView1.Update();
@@ -72,12 +180,32 @@ namespace Beatsaver_Browser
             using (var url = urlList.GetEnumerator())
             using (var ID1 = downloadID.GetEnumerator())
             {
+                StreamWriter sw = new StreamWriter(dataPath + "beatmaps.json");
                 while (url.MoveNext() && ID1.MoveNext())
                 {
                     var currentURL = url.Current;
                     var currentID = ID1.Current;
-
+                    if (listID.Any(s => currentID.Equals(s)))
+                    {
+                        continue;
+                    }
                     await DownloadInfo(currentURL, currentID);
+                }
+                sw.Write(JsonConvert.SerializeObject(jsonInfo.ToArray(), Formatting.Indented));
+                sw.Close();
+            }
+        }
+
+        private async Task DownloadImage(String currentID, String ext)
+        {
+            using (var client = new WebClient())
+            {
+                String url = "https://beatsaver.com/img/" + currentID + "." + ext;
+                String name = currentID + "." + ext;
+                await client.DownloadFileTaskAsync(url, name);
+                if (File.Exists(name) && Directory.Exists(imgPath))
+                {
+                    File.Move(name, imgPath + name);
                 }
             }
         }
@@ -89,9 +217,9 @@ namespace Beatsaver_Browser
             {
                 String name = currentID + ".zip";
                 await client.DownloadFileTaskAsync(url, name);
-                if (File.Exists(name) && Directory.Exists(dataPath))
+                if (File.Exists(name) && Directory.Exists(zipsPath))
                 {
-                    File.Move("./" + name, dataPath + "./" + name);
+                    File.Move(name, zipsPath + name);
                     sw.WriteLine(currentID);
                 }
             }
@@ -102,7 +230,7 @@ namespace Beatsaver_Browser
             using (var url = urlList.GetEnumerator())
             using (var ID1 = downloadID.GetEnumerator())
             {
-                StreamWriter sw = new StreamWriter(dataPath + @"\download.bsb", true, Encoding.ASCII);
+                StreamWriter sw = new StreamWriter(dataPath + "download.txt", true, Encoding.ASCII);
                 while (url.MoveNext() && ID1.MoveNext())
                 {
                     var currentURL = url.Current;
@@ -116,20 +244,20 @@ namespace Beatsaver_Browser
 
         private void DeleteFiles(List<String> downloadID)
         {
-            StreamReader sr = new StreamReader(dataPath + @"\download.bsb");
+            StreamReader sr = new StreamReader(dataPath + "download.txt");
             for (int i = 0; i < downloadID.Count(); i++)
             {
-                
+
             }
             List<String> keep = new List<string>();
             String line;
             line = sr.ReadLine();
             while (line != null && line != "")
             {
-                // For any s in downloadID, if downloadID contains s...
-                if (downloadID.Any(s => line.Contains(s)))
+                // For any s in downloadID, if downloadID Equals s...
+                if (downloadID.Any(s => line.Equals(s)))
                 {
-                    File.Delete(dataPath + "/" + line + ".zip");
+                    File.Delete(zipsPath + line + ".zip");
                 }
                 else
                 {
@@ -143,11 +271,10 @@ namespace Beatsaver_Browser
 
         private void InstallFiles(List<String> downloadID)
         {
-            String extractPath = @"C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\CustomSongs";
-            StreamWriter sw = new StreamWriter(dataPath + @"\install.bsb", true, Encoding.ASCII);
+            StreamWriter sw = new StreamWriter(dataPath + "install.txt", true, Encoding.ASCII);
             for (int i = 0; i < downloadID.Count(); i++)
             {
-                String name = dataPath + "./" + downloadID[i] + ".zip";
+                String name = zipsPath + downloadID[i] + ".zip";
 
                 //ZipFile.ExtractToDirectory(name, extractPath);
                 using (ZipArchive archive = ZipFile.OpenRead(name))
@@ -175,7 +302,7 @@ namespace Beatsaver_Browser
 
         private void UninstallFiles(List<String> downloadID)
         {
-            StreamReader sr = new StreamReader(dataPath + @"\install.bsb");
+            StreamReader sr = new StreamReader(dataPath + "install.txt");
             String line;
             //Pass the file path and file name to the StreamReader constructor
 
@@ -185,13 +312,13 @@ namespace Beatsaver_Browser
             while (line != null && line != "")
             {
                 List<String> words = new List<String>(line.Split('|'));
-                // For any s in downloadID, if downloadID contains s...
-                if (downloadID.Any(s => words[0].Contains(s)))
+                // For any s in downloadID, if downloadID Equals s...
+                if (downloadID.Any(s => words[0].Equals(s)))
                 {
-                    String extractPath = @"C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\CustomSongs";
+
                     if (Directory.Exists(extractPath))
                     {
-                        Directory.Delete(extractPath + @"\" + words[1], true);
+                        Directory.Delete(extractPath + words[1], true);
                     }
                 }
                 else
@@ -207,28 +334,28 @@ namespace Beatsaver_Browser
 
         private void UpdateInstalled(List<String> keep)
         {
-            StreamWriter sw = new StreamWriter(dataPath + @"\install.bsb.tmp", true, Encoding.ASCII);
+            StreamWriter sw = new StreamWriter(dataPath + "install.txt.tmp", true, Encoding.ASCII);
             for (int i = 0; i < keep.Count(); i++)
             {
                 sw.WriteLine(keep[i]);
             }
             sw.Close();
 
-            File.Delete(dataPath + @"\install.bsb");
-            File.Move(dataPath + @"\install.bsb.tmp", dataPath + @"\install.bsb");
+            File.Delete(dataPath + "install.txt");
+            File.Move(dataPath + "install.txt.tmp", dataPath + "install.txt");
         }
 
         private void UpdateDownloaded(List<String> keep)
         {
-            StreamWriter sw = new StreamWriter(dataPath + @"\download.bsb.tmp", true, Encoding.ASCII);
+            StreamWriter sw = new StreamWriter(dataPath + "download.txt.tmp", true, Encoding.ASCII);
             for (int i = 0; i < keep.Count(); i++)
             {
                 sw.WriteLine(keep[i]);
             }
             sw.Close();
 
-            File.Delete(dataPath + @"\download.bsb");
-            File.Move(dataPath + @"\download.bsb.tmp", dataPath + @"\download.bsb");
+            File.Delete(dataPath + "download.txt");
+            File.Move(dataPath + "download.txt.tmp", dataPath + "download.txt");
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)

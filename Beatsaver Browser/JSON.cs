@@ -15,7 +15,7 @@ namespace Beatsaver_Browser
         public int offset { get; set; }
     }
 
-    public class RootObject
+    public class Beatmap
     {
         public string id { get; set; }
         public string beatname { get; set; }
