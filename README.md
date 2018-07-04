@@ -17,6 +17,7 @@ Current features:
 
 
 TODO (important):
+- Song preview + caching (imo, this is super important)
 - Adjustable range of maps to check for (0-newest, currently set to 14-24)
 - Display status of whatever is going on (downloading/installing)
 - Additional safety checks to prevent or handle conflicts (ie. installing when already installed)
