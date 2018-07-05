@@ -7,7 +7,7 @@ It keeps track of downloaded and installed songs, so you know what maps you've g
 Built for Beatsaver.com but can be extended to other websites if needed.
 
 Requirements:
-Song Loader: Download the recommended package here https://github.com/Umbranoxio/BeatSaberModInstaller/releases
+- Song Loader: Download the recommended package here https://github.com/Umbranoxio/BeatSaberModInstaller/releases
 
 Benchmarks (dependent on internet, scores from 75mbps internet + nvme SSD):
 - Load speed from internet: ~375 maps/minute.
