@@ -10,18 +10,12 @@ Requirements:
 Song Loader: Download the recommended package here https://github.com/Umbranoxio/BeatSaberModInstaller/releases
 
 Benchmarks (dependent on internet, scores from 75mbps internet + nvme SSD):
-
-Load speed from internet: ~375 maps/minute
-
-Load speed from disk: ~500 maps/second
-
+Load speed from internet: ~375 maps/minute.
+Load speed from disk: ~500 maps/second.
 Download speed: ~85 maps/minute
-
-Estimated size: ~215 maps/GB
-
-Install/Uninstall/Delete speed: Instant
-
-Memory usage: ~2500 maps/GB
+Estimated size: ~215 maps/GB.
+Install/Uninstall/Delete speed: Instant.
+Memory usage: ~2500 maps/GB.
 
 Current features:
 - Browse songs
