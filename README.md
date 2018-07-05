@@ -1,27 +1,34 @@
 Beatsaver-Browser
 
-*Currently only pulls 10 maps, will add in adjustable range soon*
+![alt text](https://i.imgur.com/s14jyi6.png)
 
 This is a standalone application for managing custom songs.
 It keeps track of downloaded and installed songs, so you know what maps you've got and what maps you can get.
 Built for Beatsaver.com but can be extended to other websites once development matures.
 
+Benchmarks (dependent on internet, scores from 75mbps internet + nvme SSD)
+Load speed from internet: ~375 maps/minute
+Load speed from disk: ~500 maps/second
+Download speed: ~85 maps/minute
+Estimated size: ~215 maps/GB
+Install/Uninstall/Delete speed: Instant
+Memory usage: ~2500 maps/GB
+
 Current features:
-- Download songs
+- Browse songs
+- Download songs (loading/downloading may take a while, but will be worth it later on)
 - Install songs
 - Uninstall songs
-- Delete downloaded files
 - Keep track of downloaded/installed files
 - Remember song info and load at startup (loading is hyper fast!)
 - Apply status to maps (downloaded/installed)
-
+- Song Preview (listen to music before deciding to install andplay it)
+- Adjustable map loading range (default is latest, checked on startup)
 
 TODO (important):
-- Song preview + caching (imo, this is super important)
-- Adjustable range of maps to check for (0-newest, currently set to 14-24)
-- Display status of whatever is going on (downloading/installing)
-- Additional safety checks to prevent or handle conflicts (ie. installing when already installed)
+- Implement an actual GUI (eventually)
 
 TODO (lower priority):
-- Implement an actual GUI
-- Display only needed information (button to show all info)
+- Existing song detection (possible, but may require workarounds)
+- Display only needed information (or implement an actual GUI)
+- More safety checks, once more conflicts/issues arise

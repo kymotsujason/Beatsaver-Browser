@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Beatsaver Browser")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A standalone application to browse and manage Beatsaver maps")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("kymotsujason")]
 [assembly: AssemblyProduct("Beatsaver Browser")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
