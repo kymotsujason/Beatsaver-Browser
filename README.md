@@ -3,15 +3,24 @@ Beatsaver-Browser
 ![alt text](https://i.imgur.com/s14jyi6.png)
 
 This is a standalone application for managing custom songs.
-It keeps track of downloaded and installed songs, so you know what maps you've got and what maps you can get.
-Built for Beatsaver.com but can be extended to other websites once development matures.
+It keeps track of downloaded and installed songs, so you know what maps you've got and what maps to get.
+Built for Beatsaver.com but can be extended to other websites if needed.
+
+Requirements:
+Song Loader: Download the recommended package here https://github.com/Umbranoxio/BeatSaberModInstaller/releases
 
 Benchmarks (dependent on internet, scores from 75mbps internet + nvme SSD):
+
 Load speed from internet: ~375 maps/minute
+
 Load speed from disk: ~500 maps/second
+
 Download speed: ~85 maps/minute
+
 Estimated size: ~215 maps/GB
+
 Install/Uninstall/Delete speed: Instant
+
 Memory usage: ~2500 maps/GB
 
 Current features:
