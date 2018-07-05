@@ -6,7 +6,7 @@ This is a standalone application for managing custom songs.
 It keeps track of downloaded and installed songs, so you know what maps you've got and what maps you can get.
 Built for Beatsaver.com but can be extended to other websites once development matures.
 
-Benchmarks (dependent on internet, scores from 75mbps internet + nvme SSD)
+Benchmarks (dependent on internet, scores from 75mbps internet + nvme SSD):
 Load speed from internet: ~375 maps/minute
 Load speed from disk: ~500 maps/second
 Download speed: ~85 maps/minute
