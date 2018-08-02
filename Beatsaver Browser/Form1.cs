@@ -77,7 +77,7 @@ namespace Beatsaver_Browser
                             Image image = Image.FromFile(imgPath + obj.id + "." + obj.img);
                             dataGridView1.Rows.Add(Action.FalseValue, null, image, obj.id, obj.beatname,
                                 obj.songName, obj.beatsPerMinute, obj.difficultyLevels, obj.downloads, obj.plays,
-                                obj.upvotes, obj.uploader, obj.beattext, "https://beatsaver.com/details.php?id=" + obj.id);
+                                obj.upvotes, obj.uploader, obj.beattext, "https://beatsaver.com/api/songs/details/" + obj.id);
                             listID.Add(obj.id);
                             dataGridView1.Update();
                         }
@@ -167,14 +167,14 @@ namespace Beatsaver_Browser
         {
             using (WebClient wc = new WebClient())
             {
-                Uri url = new Uri("https://beatsaver.com/api.php?mode=new");
+                Uri url = new Uri("https://beatsaver.com/api/songs/new");
                 var json = await wc.DownloadStringTaskAsync(url);
                 var obj = JsonConvert.DeserializeObject<List<Beatmap>>(json);
                 if (obj != null)
                 {
                     if (obj.Count() > 0)
                     {
-                        int max = 1;
+                        int max = 2;
                         max = Convert.ToInt32(obj[0].id);
                         numericUpDown2.Maximum = max;
                         numericUpDown2.Minimum = 1;
@@ -221,7 +221,7 @@ namespace Beatsaver_Browser
                             Image image = Image.FromFile(imgPath + currentID + "." + obj[0].img);
                             dataGridView1.Rows.Add(Action.FalseValue, null, image, obj[0].id, obj[0].beatname,
                                 obj[0].songName, obj[0].beatsPerMinute, obj[0].difficultyLevels, obj[0].downloads, obj[0].plays,
-                                obj[0].upvotes, obj[0].uploader, obj[0].beattext, "https://beatsaver.com/details.php?id=" + obj[0].id);
+                                obj[0].upvotes, obj[0].uploader, obj[0].beattext, "https://beatsaver.com/api/songs/details/" + obj[0].id);
                         }
                         else
                         {
@@ -231,7 +231,7 @@ namespace Beatsaver_Browser
                             Image image = Image.FromFile(imgPath + currentID + "." + obj[0].img);
                             dataGridView1.Rows.Add(Action.FalseValue, null, image, obj[0].id, obj[0].beatname,
                                 obj[0].songName, obj[0].beatsPerMinute, obj[0].difficultyLevels, obj[0].downloads, obj[0].plays,
-                                obj[0].upvotes, obj[0].uploader, obj[0].beattext, "https://beatsaver.com/details.php?id=" + obj[0].id);
+                                obj[0].upvotes, obj[0].uploader, obj[0].beattext, "https://beatsaver.com/api/songs/details/" + obj[0].id);
                         }
                         //sw.Write(JsonConvert.SerializeObject(obj.ToArray(), Formatting.Indented));
                         jsonInfo.Add(obj[0]);
@@ -352,7 +352,7 @@ namespace Beatsaver_Browser
             UpdateDownloaded(keep);
         }
 
-        private void InstallFiles(List<String> downloadID)
+        private async void InstallFiles(List<String> downloadID)
         {
             StreamWriter sw = new StreamWriter(dataPath + "install.txt", true, Encoding.ASCII);
             for (int i = 0; i < downloadID.Count(); i++)
@@ -523,7 +523,7 @@ namespace Beatsaver_Browser
                 List<String> urlList = new List<String>();
                 for (int i = 0; i < downloadID.Count(); i++)
                 {
-                    urlList.Add("https://beatsaver.com/dl.php?id=" + downloadID[i]);
+                    urlList.Add("https://beatsaver.com/api/songs/details/" + downloadID[i]);
                 }
 
                 PreviewFiles(downloadID, urlList);
@@ -579,7 +579,7 @@ namespace Beatsaver_Browser
             List<Uri> urlList = new List<Uri>();
             for (int num = (int)numericUpDown1.Value; num <= (int)numericUpDown2.Value; num++)
             {
-                Uri HostURI = new Uri("https://beatsaver.com/api.php?mode=details&id=" + num);
+                Uri HostURI = new Uri("https://beatsaver.com/api/songs/details/" + num);
                 downloadID.Add(num.ToString());
                 urlList.Add(HostURI);
             }
@@ -612,7 +612,7 @@ namespace Beatsaver_Browser
             List<String> urlList = new List<String>();
             for (int i = 0; i < downloadID.Count(); i++)
             {
-                urlList.Add("https://beatsaver.com/dl.php?id=" + downloadID[i]);
+                urlList.Add("https://beatsaver.com/api/songs/details/" + downloadID[i]);
             }
 
             await DownloadFiles(urlList, downloadID);
@@ -649,7 +649,7 @@ namespace Beatsaver_Browser
             List<String> urlList = new List<String>();
             for (int i = 0; i < downloadID.Count(); i++)
             {
-                urlList.Add("https://beatsaver.com/dl.php?id=" + downloadID[i]);
+                urlList.Add("https://beatsaver.com/api/songs/details/" + downloadID[i]);
             }
 
             await DownloadFiles(urlList, downloadID);
